@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Team Registration</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Team Registration</h2>
+    <form id="teamForm">
+      <input type="text" id="teamName" placeholder="Team Name" required>
+      <input type="text" id="coachName" placeholder="Coach Name" required>
+      <input type="text" id="category" placeholder="Category (e.g., U17, U20)" required>
+      <button type="submit">Register Team</button>
+    </form>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCp6tN1nTAFvqc6A9w5p-C9c1IZstx_zh0",
+      authDomain: "hockey-307a1.firebaseapp.com",
+      databaseURL: "https://hockey-307a1-default-rtdb.firebaseio.com",
+      projectId: "hockey-307a1",
+      storageBucket: "hockey-307a1.appspot.com",
+      messagingSenderId: "333906521892",
+      appId: "1:333906521892:web:4d207e1a3dd24b8e93cdb1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    document.getElementById('teamForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const teamData = {
+        name: document.getElementById('teamName').value,
+        coach: document.getElementById('coachName').value,
+        category: document.getElementById('category').value
+      };
+
+      push(ref(db, 'teams/'), teamData)
+        .then(() => alert("Team registered successfully!"))
+        .catch(err => alert("Error: " + err.message));
+    });
+  </script>
+</body>
+</html>

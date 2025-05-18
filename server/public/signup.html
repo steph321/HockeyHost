@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+      <input type="text" id="fullname" placeholder="Full Name" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <select id="role" required>
+        <option value="" disabled selected>Select Role</option>
+        <option value="admin">Admin</option>
+        <option value="player">Player</option>
+      </select>
+      <button type="submit">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="login.html">Login here</a></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-database.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCp6tN1nTAFvqc6A9w5p-C9c1IZstx_zh0",
+      authDomain: "hockey-307a1.firebaseapp.com",
+      databaseURL: "https://hockey-307a1-default-rtdb.firebaseio.com",
+      projectId: "hockey-307a1",
+      storageBucket: "hockey-307a1.appspot.com",
+      messagingSenderId: "333906521892",
+      appId: "1:333906521892:web:4d207e1a3dd24b8e93cdb1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    document.getElementById('signupForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fullname = document.getElementById('fullname').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const role = document.getElementById('role').value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          set(ref(db, 'users/' + user.uid), {
+            fullname,
+            email,
+            role
+          }).then(() => {
+            alert('Account created! Redirecting to login...');
+            window.location.href = 'login.html';
+          });
+        })
+        .catch((error) => alert(error.message));
+    });
+  </script>
+</body>
+</html>

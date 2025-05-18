@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCp6tN1nTAFvqc6A9w5p-C9c1IZstx_zh0",
+      authDomain: "hockey-307a1.firebaseapp.com",
+      databaseURL: "https://hockey-307a1-default-rtdb.firebaseio.com",
+      projectId: "hockey-307a1",
+      storageBucket: "hockey-307a1.appspot.com",
+      messagingSenderId: "333906521892",
+      appId: "1:333906521892:web:4d207e1a3dd24b8e93cdb1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          onAuthStateChanged(auth, async (user) => {
+            if (user) {
+              const snapshot = await get(ref(db, 'users/' + user.uid));
+              if (snapshot.exists()) {
+                const data = snapshot.val();
+                if (data.role === 'admin') {
+                  window.location.href = 'dashboard.html';
+                } else {
+                  window.location.href = 'dashboard-player.html';
+                }
+              } else {
+                alert('No user data found');
+              }
+            }
+          });
+        })
+        .catch((error) => alert('Login failed: ' + error.message));
+    });
+  </script>
+</body>
+</html>

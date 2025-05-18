@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Player Dashboard - Events</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #eee;
+      margin: 0;
+      padding: 0;
+    }
+    nav {
+      background-color: #1f2937;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 20px;
+    }
+    nav a {
+      color: #facc15; /* amber-400 */
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    nav a:hover {
+      color: #fbbf24; /* amber-300 */
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #1e293b; /* slate-800 */
+      padding: 25px 40px;
+      border-radius: 8px;
+      box-shadow: 0 0 12px #facc15aa;
+    }
+    h2 {
+      color: #fbbf24;
+      margin-bottom: 30px;
+    }
+    ul#events {
+      list-style-type: none;
+      padding: 0;
+    }
+    ul#events li {
+      background: #334155; /* slate-700 */
+      margin-bottom: 15px;
+      padding: 15px 20px;
+      border-radius: 6px;
+      font-size: 18px;
+      color: #f3f4f6; /* slate-100 */
+      box-shadow: 0 2px 5px #facc1577;
+      transition: background 0.3s ease;
+    }
+    ul#events li:hover {
+      background: #475569; /* slate-600 */
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="dashboard-player.html">Events</a>
+    <a href="index.html">Chat Room</a>
+    <a href="#" id="logoutBtn">Logout</a>
+  </nav>
+
+  <div class="container">
+    <h2>Upcoming Events</h2>
+    <ul id="events">
+      <li>Loading events...</li>
+    </ul>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.7.0/firebase-database.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCp6tN1nTAFvqc6A9w5p-C9c1IZstx_zh0",
+      authDomain: "hockey-307a1.firebaseapp.com",
+      databaseURL: "https://hockey-307a1-default-rtdb.firebaseio.com",
+      projectId: "hockey-307a1",
+      storageBucket: "hockey-307a1.appspot.com",
+      messagingSenderId: "333906521892",
+      appId: "1:333906521892:web:4d207e1a3dd24b8e93cdb1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const auth = getAuth(app);
+
+    // Check if user is logged in and role is player
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        // Not logged in, redirect to login
+        window.location.href = 'login.html';
+        return;
+      }
+      // Fetch user role from database
+      const userRef = ref(database, 'users/' + user.uid + '/role');
+      onValue(userRef, (snapshot) => {
+        const role = snapshot.val();
+        if (role !== 'player') {
+          alert('Access denied. This page is for players only.');
+          auth.signOut();
+          window.location.href = 'login.html';
+        }
+      });
+    });
+
+    // Real-time load events
+    const eventsRef = ref(database, 'events');
+    const eventsList = document.getElementById('events');
+
+    onValue(eventsRef, (snapshot) => {
+      eventsList.innerHTML = '';
+      if (!snapshot.exists()) {
+        eventsList.innerHTML = '<li>No upcoming events.</li>';
+        return;
+      }
+      snapshot.forEach((childSnapshot) => {
+        const event = childSnapshot.val();
+        const li = document.createElement('li');
+        li.textContent = `${event.name} ${event.date ? ' - ' + event.date : ''}`;
+        eventsList.appendChild(li);
+      });
+    }, (error) => {
+      eventsList.innerHTML = '<li>Error loading events.</li>';
+      console.error(error);
+    });
+
+    // Logout button
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
+</body>
+</html>
