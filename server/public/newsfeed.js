@@ -1,7 +1,7 @@
 const apiKey = 'e98e90d6524a441d8bd1c5bfb92c1fa0'; // Replace with your NewsAPI key
 const newsfeed = document.getElementById('newsfeed');
 
-fetch(`https://newsapi.org/v2/everything?q=South%20Africa%20hockey&language=en&apiKey=${apiKey}`)
+fetch('/api/news')
   .then(res => res.json())
   .then(data => {
     if (!data.articles || data.articles.length === 0) {
