@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events</title>
+    <link rel="stylesheet" href="Main-app.css">
+</head>
+<body>
+   <header>
+    <h1><a href="admin-dashboard.html">🏑 Hockey Hub</a></h1>
+    <nav>
+      <a href="register-team.html">Register Team</a>
+      <a href="register-player.html">Register Player</a>
+      <a href="events.html">Manage Events</a>
+      <a href="chatroom.html">Chatroom</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </nav>
+  </header>
+
+  <div class="form-container">
+    <h2>Event Entry</h2>
+    <form id="eventForm">
+      <input type="text" id="eventTitle" placeholder="Event Title" required />
+      <input type="text" id="eventDescription" placeholder="Event Description" required />
+      <input type="text" id="eventLocation" placeholder="Event Location" required />
+      <input type="date" id="eventDate" required />
+      <button type="submit">Add Event</button>
+    </form>
+
+    <h3>Upcoming Events</h3>
+    <ul id="eventList"></ul>
+
+  </div>
+    <script type="module">
+  import { db } from './js-1/firebase-config.js';
+  import { addEvent, fetchEvents } from './js-1/event.js';
+
+    const eventForm = document.getElementById("eventForm");
+    const eventList = document.getElementById("eventList");
+
+    eventForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = document.getElementById("eventTitle").value;
+      const description = document.getElementById("eventDescription").value;
+      const location = document.getElementById("eventLocation").value;
+      const date = document.getElementById("eventDate").value;
+
+      try {
+        await addEvent(title, description,location, date);
+        alert("Event added!");
+        eventForm.reset();
+      } catch (error) {
+        alert("Failed to add event: " + error.message);
+      }
+    });
+
+    fetchEvents((events) => {
+      eventList.innerHTML = '';
+      for (const id in events) {
+        const { title, description, location,date } = events[id];
+        const li = document.createElement("li");
+        li.textContent = `${title} - ${description} at ${location} on ${date}`;
+        eventList.appendChild(li);
+      }
+    });
+</script>
+</body>
+</html>

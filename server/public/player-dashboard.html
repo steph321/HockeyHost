@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Player</title>
+  <link rel="stylesheet" href="Main-app.css" />
+  
+</head>
+<body>
+   <header>
+    <h1>🏑 Hockey Hub</h1>
+    <nav>
+      <a href="profile.html">Profile</a>
+      <a href="player-events.html">Events</a>
+      <a href="chatroom.html">Chatroom</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </nav>
+  </header>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBKQhimkiF4vvWOzuAYe2aPwdxOcnxszIk",
+      authDomain: "hockey-app-34130.firebaseapp.com",
+      projectId: "hockey-app-34130",
+      storageBucket: "hockey-app-34130.firebasestorage.app",
+      messagingSenderId: "339250713825",
+      appId: "1:339250713825:web:4afcd188cbf4575d6953a0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Optional: Logout functionality
+    const logoutBtn = document.getElementById('logoutBtn');
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        window.location.href = 'login.html'; // Change this if your login page has a different name
+      }).catch(error => {
+        alert('Error logging out: ' + error.message);
+      });
+    });
+  </script>
+</body>
+</html>

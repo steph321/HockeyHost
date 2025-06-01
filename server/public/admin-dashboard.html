@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin</title>
+  <link rel="stylesheet" href="Main-app.css" />
+  <style>
+    /* Styling for new admin widgets */
+    .widgets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 1rem;
+    }
+    .widget {
+      background: #f5f5f5;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      flex: 1 1 250px;
+    }
+    .widget h3 {
+      margin-top: 0;
+      font-size: 1.2rem;
+    }
+    #weather {
+      font-size: 1rem;
+      margin-top: 0.5rem;
+      color: #333;
+    }
+    .quote {
+      font-style: italic;
+      color: #444;
+      min-height: 60px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><a href="admin-dashboard.html">🏑 Hockey Hub</a></h1>
+    <nav>
+      <a href="register-team.html">Register Team</a>
+      <a href="register-player.html">Register Player</a>
+      <a href="events.html">Manage Events</a>
+      <a href="chatroom.html">Chatroom</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </nav>
+  </header>
+
+  <main class="dashboard">
+    <div class="widgets">
+      <div class="widget">
+        <h3>📈 Total Players</h3>
+        <p id="widgetPlayerCount">Loading...</p>
+      </div>
+      <div class="widget">
+        <h3>🏆 Total Teams</h3>
+        <p id="widgetTeamCount">Loading...</p>
+      </div>
+      <div class="widget">
+        <h3>☁️ Weather</h3>
+        <p id="weather">Loading weather...</p>
+      </div>
+      <div class="widget">
+        <h3>🌟 Motivational Quote</h3>
+        <p class="quote" id="motivationalQuote">Loading quote...</p>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBKQhimkiF4vvWOzuAYe2aPwdxOcnxszIk",
+      authDomain: "hockey-app-34130.firebaseapp.com",
+      projectId: "hockey-app-34130",
+      storageBucket: "hockey-app-34130.appspot.com",
+      messagingSenderId: "339250713825",
+      appId: "1:339250713825:web:4afcd188cbf4575d6953a0",
+      databaseURL: "https://hockey-app-34130-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        window.location.href = 'login.html';
+      }).catch(error => {
+        alert('Error logging out: ' + error.message);
+      });
+    });
+
+    // Player and Team count widgets
+    const widgetPlayerCount = document.getElementById('widgetPlayerCount');
+    const widgetTeamCount = document.getElementById('widgetTeamCount');
+
+    onValue(ref(db, 'players/'), (snapshot) => {
+      const data = snapshot.val();
+      const count = data ? Object.keys(data).length : 0;
+      widgetPlayerCount.textContent = count;
+    });
+
+    onValue(ref(db, 'teams/'), (snapshot) => {
+      const data = snapshot.val();
+      const count = data ? Object.keys(data).length : 0;
+      widgetTeamCount.textContent = count;
+    });
+
+    // Weather widget using WeatherAPI
+    const weatherEl = document.getElementById('weather');
+    const weatherApiKey = '28d99f6bfc1042c483e124809253005'; // <-- Paste your WeatherAPI key here
+    const city = 'Windhoek'; // Change city if needed
+
+    fetch(`https://api.weatherapi.com/v1/current.json?key=${weatherApiKey}&q=${city}&aqi=no`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.current) {
+          weatherEl.textContent = `${data.location.name}: ${data.current.temp_c}°C, ${data.current.condition.text}`;
+        } else {
+          weatherEl.textContent = 'Unable to fetch weather data.';
+        }
+      })
+      .catch(err => {
+        weatherEl.textContent = 'Error fetching weather data.';
+        console.error('WeatherAPI error:', err);
+      });
+
+    // Hardcoded motivational quotes
+    const quotes = [
+      { q: "The only way to do great work is to love what you do.", a: "Steve Jobs" },
+      { q: "Success is not final, failure is not fatal: It is the courage to continue that counts.", a: "Winston Churchill" },
+      { q: "Believe you can and you're halfway there.", a: "Theodore Roosevelt" },
+      { q: "Don't watch the clock; do what it does. Keep going.", a: "Sam Levenson" },
+      { q: "You are never too old to set another goal or to dream a new dream.", a: "C.S. Lewis" }
+    ];
+
+    const quoteEl = document.getElementById('motivationalQuote');
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    const quote = quotes[randomIndex];
+    quoteEl.innerHTML = `"${quote.q}"<br><em>- ${quote.a}</em>`;
+  </script>
+</body>
+</html>

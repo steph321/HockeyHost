@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Player Events</title>
+  <link rel="stylesheet" href="Main-app.css" />
+</head>
+<body>
+  <header>
+    <h1>🏑 Hockey Hub</h1>
+    <nav>
+      <a href="profile.html">Profile</a>
+      <a href="player-events.html">Events</a>
+      <a href="chatroom.html">Chatroom</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </nav>
+  </header>
+
+  <h2>Upcoming Events</h2>
+  <ul id="playerEventList"></ul>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBKQhimkiF4vvWOzuAYe2aPwdxOcnxszIk",
+      authDomain: "hockey-app-34130.firebaseapp.com",
+      projectId: "hockey-app-34130",
+      storageBucket: "hockey-app-34130.appspot.com",
+      messagingSenderId: "339250713825",
+      appId: "1:339250713825:web:4afcd188cbf4575d6953a0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    // Logout
+    const logoutBtn = document.getElementById('logoutBtn');
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        window.location.href = 'login.html';
+      }).catch(error => {
+        alert('Error logging out: ' + error.message);
+      });
+    });
+
+    // Load Events
+    const eventListEl = document.getElementById('playerEventList');
+
+    function loadEvents() {
+      const eventsRef = ref(db, 'events');
+      get(eventsRef).then(snapshot => {
+        if (snapshot.exists()) {
+          const events = snapshot.val();
+          eventListEl.innerHTML = '';
+          Object.values(events).forEach(event => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+              <strong>${event.title}</strong><br/>
+              Date: ${event.date}<br/>
+              Location: ${event.location || "Not specified"}<br/>
+              Description: ${event.description}<br/><br/>
+            `;
+            eventListEl.appendChild(li);
+          });
+        } else {
+          eventListEl.innerHTML = '<li>No upcoming events.</li>';
+        }
+      }).catch(error => {
+        console.error('Error fetching events:', error);
+        eventListEl.innerHTML = '<li>Error loading events.</li>';
+      });
+    }
+
+    loadEvents();
+  </script>
+</body>
+</html>

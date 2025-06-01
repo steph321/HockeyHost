@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="Main-app.css">
+</head>
+<body>
+   <header>
+    <h1><a href="admin-dashboard.html">🏑 Hockey Hub</a></h1>
+    <nav>
+      <a href="register-team.html">Register Team</a>
+      <a href="register-player.html">Register Player</a>
+      <a href="events.html">Manage Events</a>
+      <a href="chatroom.html">Chatroom</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </nav>
+  </header>
+
+   <div class="form-container">
+    <h2>Player Registration</h2>
+    <form id="playerForm">
+      <input type="text" id="playerName" placeholder="Full Name" required>
+      <input type="number" id="playerAge" placeholder="Age" required>
+      <input type="text" id="team" placeholder="Team" required>
+      <button type="submit">Register Player</button>
+    </form>
+  </div>
+   <script type="module">
+  import { registerPlayer } from './js-1/player.js';
+  import { app } from './js-1/firebase-config.js'; // Ensure Firebase is initialized
+
+  document.getElementById('playerForm').addEventListener('submit', e => {
+    e.preventDefault();
+    
+    const name = document.getElementById('playerName').value;
+    const age = parseInt(document.getElementById('playerAge').value);
+    const team = document.getElementById('team').value;
+
+    registerPlayer(name, age, team)
+      .then(() => {
+        alert('Player registered!');
+        e.target.reset();
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error: ' + err.message);
+      });
+  });
+</script>
+
+</body>
+</html>
