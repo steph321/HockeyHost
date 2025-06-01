@@ -2,6 +2,7 @@ import express from 'express'
 import {Server} from "socket.io"
 import path from 'path'
 import { fileURLToPath } from 'url'
+import fetch from 'node-fetch'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname=path.dirname(__filename)
@@ -12,6 +13,27 @@ const ADMIN = "Admin"
 const app = express()
 
 app.use(express.static(path.join(__dirname, "public")))
+
+app.get('/api/news', async (requestAnimationFrame,res)=>{
+    try{
+        const apiKey=process.env.NEWS_API_KEY
+        if(!apiKey){
+            return res.status(500).json({error:"API key is not set"})
+        }
+        const newsUrl= `https://newsapi.org/v2/everything?q=South%20Africa%20hockey&language=en&apiKey=${apiKey}`
+        const response = await fetch(newsUrl)
+        const data = await response.json()
+
+        if(response.ok){
+            res.json(date)
+        }else{
+            res.status(response.status).json({error:data.message || 'Error fetching news'})
+        }
+    }catch(error){
+        console.error('Error fetching news:', error)
+        res.status(500).json({error:'server error fetching news'})
+    }
+})
 
 
 const expressServer = app.listen(PORT, () => {
@@ -28,7 +50,7 @@ const UsersState={
 
 const io = new Server(expressServer, {
     cors: {
-        origin: process.env.NODE_ENV === "production" ? false : ["http://localhost:5500", "http://127.0.0.1:5500"]
+        origin: process.env.NODE_ENV === "production" ? ["https://hockeyhost.onrender.com"]  : "https://hockeyhost.onrender.com/" ["http://localhost:5500", "http://127.0.0.1:5500"]
     }
 })
 
