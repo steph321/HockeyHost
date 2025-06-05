@@ -11,12 +11,41 @@
    <header>
     <h1>🏑 Hockey Hub</h1>
     <nav>
+      <a href="player-dashboard.html">Dashboard</a>
       <a href="profile.html">Profile</a>
       <a href="player-events.html">Events</a>
       <a href="chatroom.html">Chatroom</a>
+      <a href="training-schedule.html">Training</a>
+      <a href="progress-tracker.html">Tracker</a>
       <a href="#" id="logoutBtn">Logout</a>
     </nav>
   </header>
+
+  <main>
+  <section class="dashboard-card">
+    <h2>🏑 Hockey Trivia</h2>
+    <p id="trivia">Loading trivia...</p>
+  </section>
+
+  <section class="dashboard-card">
+    <h2>💡 Training Tip</h2>
+    <p id="trainingTip">Loading tip...</p>
+  </section>
+
+  <section class="dashboard-card">
+    <h2>💪 Fitness Tracker</h2>
+    <input type="text" id="exerciseInput" placeholder="e.g. Push-ups: 30" />
+    <button id="logExerciseBtn">Log Exercise</button>
+    <ul id="exerciseLog"></ul>
+  </section>
+
+  <section class="dashboard-card">
+    <h2>🧠 Daily Motivation</h2>
+    <p id="motivation">Loading motivation...</p>
+  </section>
+</main>
+
+
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
@@ -44,6 +73,63 @@
         alert('Error logging out: ' + error.message);
       });
     });
+
+    // 1. Trivia (local list, simulating API)
+const triviaList = [
+  "The Stanley Cup has its own bodyguard.",
+  "The fastest slapshot recorded was over 108 mph.",
+  "Goalies didn’t wear masks until the 1950s.",
+  "Wayne Gretzky's jersey number 99 is retired league-wide.",
+  "Hockey pucks are frozen before games to reduce bouncing."
+];
+document.getElementById("trivia").textContent =
+  triviaList[Math.floor(Math.random() * triviaList.length)];
+
+// 2. Training Tips (local JSON-like array)
+const tips = [
+  "Work on your foot speed with ladder drills.",
+  "Warm up your wrists with light stickhandling before games.",
+  "Sprint intervals help improve your on-ice stamina.",
+  "Stretch every day to avoid tight hips and groin injuries.",
+  "Practice backhand shots — they’re often unexpected!"
+];
+document.getElementById("trainingTip").textContent =
+  tips[Math.floor(Math.random() * tips.length)];
+
+// 3. Fitness Tracker (LocalStorage)
+const logBtn = document.getElementById("logExerciseBtn");
+const logList = document.getElementById("exerciseLog");
+logBtn.addEventListener("click", () => {
+  const val = document.getElementById("exerciseInput").value;
+  if (val) {
+    let logs = JSON.parse(localStorage.getItem("fitnessLog")) || [];
+    logs.push(val);
+    localStorage.setItem("fitnessLog", JSON.stringify(logs));
+    renderLogs();
+    document.getElementById("exerciseInput").value = "";
+  }
+});
+function renderLogs() {
+  logList.innerHTML = "";
+  const logs = JSON.parse(localStorage.getItem("fitnessLog")) || [];
+  logs.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    logList.appendChild(li);
+  });
+}
+renderLogs();
+
+// 4. Motivation API (Real API call)
+fetch("https://api.quotable.io/random?tags=sports|inspirational")
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("motivation").textContent = `"${data.content}" — ${data.author}`;
+  })
+  .catch(() => {
+    document.getElementById("motivation").textContent = "Stay strong. Keep pushing.";
+  });
+
   </script>
 </body>
 </html>

@@ -1,0 +1,9 @@
+{
+  "appId": "com.example.HockeyApp",
+  "appName": "Hockey Hub",
+  "webDir": "public",
+  "server": {
+    "url": "https://hockeyhost.onrender.com",
+    "cleartext": false
+  }
+}
