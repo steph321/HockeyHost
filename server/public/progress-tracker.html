@@ -3,32 +3,178 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Progress Tracker</title>
+  <title>Progress Tracker - Hockey Hub</title>
   <link rel="stylesheet" href="Main-app.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #1d3557;
+      padding: 1rem 2rem;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    header nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 1rem;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    header nav a:hover {
+      color: #a8dadc;
+    }
+
+    main {
+      flex: 1;
+      max-width: 800px;
+      background: white;
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #1d3557;
+    }
+
+    form {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    form label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 500;
+    }
+
+    form input {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    form button {
+      padding: 0.75rem;
+      background-color: #1d3557;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    form button:hover {
+      background-color: #457b9d;
+    }
+
+    #statusMessage {
+      font-weight: bold;
+      color: #2a9d8f;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 6px;
+      overflow: hidden;
+      background-color: #f9fafb;
+    }
+
+    thead {
+      background-color: #1d3557;
+      color: white;
+    }
+
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f0f4f8;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      header nav {
+        margin-top: 0.5rem;
+      }
+
+      header nav a {
+        margin-left: 0;
+        margin-right: 1rem;
+      }
+
+      main {
+        margin: 1rem;
+        padding: 1rem;
+      }
+
+      table {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
 </head>
 <body>
-   <header>
+  <header>
     <h1>🏑 Hockey Hub</h1>
     <nav>
       <a href="player-dashboard.html">Dashboard</a>
       <a href="profile.html">Profile</a>
       <a href="player-events.html">Events</a>
-      <a href="chatroom.html">Chatroom</a>
+      <a href="chatroom2.html">Chatroom</a>
       <a href="training-schedule.html">Training</a>
-      <a href="progress-tracker.html">Tracker</a>
+      <a href="progress-tracker.html" aria-current="page">Tracker</a>
       <a href="#" id="logoutBtn">Logout</a>
     </nav>
   </header>
-
 
   <main>
     <section>
       <h2>Log Your Progress</h2>
       <form id="progressForm">
-        <label>Date: <input type="date" name="date" required></label><br/>
-        <label>Stamina (1-10): <input type="number" name="stamina" min="1" max="10" required></label><br/>
-        <label>Shooting Accuracy (1-10): <input type="number" name="accuracy" min="1" max="10" required></label><br/>
-        <label>Speed (1-10): <input type="number" name="speed" min="1" max="10" required></label><br/>
+        <label>Date:
+          <input type="date" name="date" required>
+        </label>
+        <label>Stamina (1-10):
+          <input type="number" name="stamina" min="1" max="10" required>
+        </label>
+        <label>Shooting Accuracy (1-10):
+          <input type="number" name="accuracy" min="1" max="10" required>
+        </label>
+        <label>Speed (1-10):
+          <input type="number" name="speed" min="1" max="10" required>
+        </label>
         <button type="submit">Save Progress</button>
       </form>
       <p id="statusMessage"></p>
@@ -36,7 +182,7 @@
 
     <section>
       <h2>Your Previous Entries</h2>
-      <table border="1" id="progressTable">
+      <table id="progressTable">
         <thead>
           <tr>
             <th>Date</th>
@@ -53,7 +199,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-    import { getDatabase, ref, set, push, get, onValue } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+    import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBKQhimkiF4vvWOzuAYe2aPwdxOcnxszIk",

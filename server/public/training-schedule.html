@@ -5,33 +5,149 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Training Schedule</title>
   <link rel="stylesheet" href="Main-app.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f7ff;
+      color: #333;
+    }
+
+    header {
+      background-color: #1d3557;
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    nav {
+      margin-top: 10px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #ffd600;
+    }
+
+    main {
+      padding: 30px;
+      max-width: 700px;
+      margin: 40px auto;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    main h2 {
+      text-align: center;
+      color: #0d47a1;
+      margin-bottom: 20px;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    form input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #bbb;
+      border-radius: 8px;
+      margin-top: 5px;
+      transition: border 0.3s;
+    }
+
+    form input[type="text"]:focus {
+      border-color: #0d47a1;
+      outline: none;
+    }
+
+    button[type="submit"] {
+      background-color: #0d47a1;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 20px;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #1565c0;
+    }
+
+    #statusMessage {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    @media screen and (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      main {
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
 <body>
-   <header>
+  <header>
     <h1>🏑 Hockey Hub</h1>
     <nav>
       <a href="player-dashboard.html">Dashboard</a>
       <a href="profile.html">Profile</a>
       <a href="player-events.html">Events</a>
-      <a href="chatroom.html">Chatroom</a>
+      <a href="chatroom2.html">Chatroom</a>
       <a href="training-schedule.html">Training</a>
       <a href="progress-tracker.html">Tracker</a>
       <a href="#" id="logoutBtn">Logout</a>
     </nav>
   </header>
 
-
   <main>
     <section>
       <h2>Your Weekly Plan</h2>
       <form id="scheduleForm">
-        <label>Monday: <input type="text" name="monday" /></label><br/>
-        <label>Tuesday: <input type="text" name="tuesday" /></label><br/>
-        <label>Wednesday: <input type="text" name="wednesday" /></label><br/>
-        <label>Thursday: <input type="text" name="thursday" /></label><br/>
-        <label>Friday: <input type="text" name="friday" /></label><br/>
-        <label>Saturday: <input type="text" name="saturday" /></label><br/>
-        <label>Sunday: <input type="text" name="sunday" /></label><br/>
+        <label>Monday: <input type="text" name="monday" /></label>
+        <label>Tuesday: <input type="text" name="tuesday" /></label>
+        <label>Wednesday: <input type="text" name="wednesday" /></label>
+        <label>Thursday: <input type="text" name="thursday" /></label>
+        <label>Friday: <input type="text" name="friday" /></label>
+        <label>Saturday: <input type="text" name="saturday" /></label>
+        <label>Sunday: <input type="text" name="sunday" /></label>
         <button type="submit">Save Schedule</button>
       </form>
       <p id="statusMessage"></p>
@@ -41,14 +157,14 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBKQhimkiF4vvWOzuAYe2aPwdxOcnxszIk",
       authDomain: "hockey-app-34130.firebaseapp.com",
       databaseURL: "https://hockey-app-34130-default-rtdb.firebaseio.com",
       projectId: "hockey-app-34130",
-      storageBucket: "hockey-app-34130.firebasestorage.app",
+      storageBucket: "hockey-app-34130.appspot.com",
       messagingSenderId: "339250713825",
       appId: "1:339250713825:web:4afcd188cbf4575d6953a0"
     };

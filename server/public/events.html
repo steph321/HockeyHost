@@ -1,13 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Events</title>
-    <link rel="stylesheet" href="Main-app.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Events</title>
+  <link rel="stylesheet" href="Main-app.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f2f4f8;
+      color: #333;
+    }
+
+    header {
+      background-color: #1d3557;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    header h1 a {
+      text-decoration: none;
+      color: white;
+    }
+
+    nav {
+      display: flex;
+      gap: 1rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #a8dadc;
+    }
+
+    .form-container {
+      background-color: white;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h2, h3 {
+      text-align: center;
+      color: #1d3557;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    input, button {
+      padding: 0.75rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #457b9d;
+    }
+
+    button {
+      background-color: #1d3557;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #457b9d;
+    }
+
+    ul#eventList {
+      list-style: none;
+      padding: 0;
+      margin-top: 1.5rem;
+    }
+
+    ul#eventList li {
+      background-color: #f1faee;
+      border-left: 5px solid #1d3557;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .form-container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
-   <header>
+
+  <header>
     <h1><a href="admin-dashboard.html">🏑 Hockey Hub</a></h1>
     <nav>
       <a href="register-team.html">Register Team</a>
@@ -30,11 +153,11 @@
 
     <h3>Upcoming Events</h3>
     <ul id="eventList"></ul>
-
   </div>
-    <script type="module">
-  import { db } from './js-1/firebase-config.js';
-  import { addEvent, fetchEvents } from './js-1/event.js';
+
+  <script type="module">
+    import { db } from './js-1/firebase-config.js';
+    import { addEvent, fetchEvents } from './js-1/event.js';
 
     const eventForm = document.getElementById("eventForm");
     const eventList = document.getElementById("eventList");
@@ -47,23 +170,23 @@
       const date = document.getElementById("eventDate").value;
 
       try {
-        await addEvent(title, description,location, date);
-        alert("Event added!");
+        await addEvent(title, description, location, date);
+        alert("✅ Event added!");
         eventForm.reset();
       } catch (error) {
-        alert("Failed to add event: " + error.message);
+        alert("❌ Failed to add event: " + error.message);
       }
     });
 
     fetchEvents((events) => {
       eventList.innerHTML = '';
       for (const id in events) {
-        const { title, description, location,date } = events[id];
+        const { title, description, location, date } = events[id];
         const li = document.createElement("li");
-        li.textContent = `${title} - ${description} at ${location} on ${date}`;
+        li.textContent = `${title} – ${description} at ${location} on ${date}`;
         eventList.appendChild(li);
       }
     });
-</script>
+  </script>
 </body>
 </html>
